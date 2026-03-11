@@ -1,3 +1,5 @@
 """Frame correction strategies (interpolation, artifact removal)."""
 
-__all__: list = []
+from .film_interpolator import FILMInterpolator
+
+__all__ = ["FILMInterpolator"]
