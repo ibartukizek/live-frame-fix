@@ -1,3 +1,6 @@
 """Frame quality detection logic (frozen, drop, artifact detectors)."""
 
-__all__: list = []
+from .drop_detector import DropDetector
+from .frozen_detector import FrozenDetector
+
+__all__ = ["FrozenDetector", "DropDetector"]
