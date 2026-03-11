@@ -1,3 +1,5 @@
 """I/O utilities for video reading and writing."""
 
-__all__: list = []
+from .extractor import extract_frames
+
+__all__ = ["extract_frames"]
