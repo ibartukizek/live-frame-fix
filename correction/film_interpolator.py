@@ -33,8 +33,8 @@ class FILMInterpolator:
         """Load the FILM model from disk.
 
         Args:
-            model_path: Path to the pre-trained FILM PyTorch weights file
-                (``film_net.pt`` or compatible).
+            model_path: Path to the pre-trained FILM TorchScript weights file
+                (``film_net.pt`` or compatible TorchScript model).
             device: Inference device string, either ``"cuda"`` or ``"cpu"``.
             half: If ``True``, load model in FP16 (faster on supported GPUs).
 
@@ -44,28 +44,20 @@ class FILMInterpolator:
         if not os.path.exists(model_path):
             raise FileNotFoundError(
                 f"FILM model weights not found at {model_path!r}.\n"
-                "Please download the model from:\n"
-                "  https://github.com/dajes/frame-interpolation-pytorch\n"
-                "and place the weights at the configured path."
+                "Please download a TorchScript model from:\n"
+                "  https://github.com/dajes/frame-interpolation-pytorch/releases\n"
+                "and place the .pt file at the configured path.\n\n"
+                "Example usage:\n"
+                "  torch.jit.load('path/to/model.pt')"
             )
-
-        try:
-            from film_net import FilmNet  # type: ignore[import]
-        except ImportError as exc:
-            raise ImportError(
-                "frame-interpolation-pytorch is not installed.\n"
-                "Install it with:\n"
-                "  pip install frame-interpolation-pytorch"
-            ) from exc
 
         self.device = torch.device(device if torch.cuda.is_available() else "cpu")
         self.half = half and self.device.type == "cuda"
 
-        self.model: torch.nn.Module = FilmNet()
-        state_dict = torch.load(model_path, map_location=self.device)
-        self.model.load_state_dict(state_dict)
-        self.model.to(self.device)
+        # Load TorchScript model directly
+        self.model: torch.jit.ScriptModule = torch.jit.load(model_path, map_location=self.device)
         self.model.eval()
+        self.model.to(self.device)
 
         if self.half:
             self.model.half()
@@ -129,10 +121,10 @@ class FILMInterpolator:
         results: List[np.ndarray] = []
         for i in range(1, n_frames + 1):
             t = float(i) / float(n_frames + 1)
-            t_tensor = torch.tensor([[[[t]]]], dtype=tensor_a.dtype, device=self.device)
+            dt_tensor = torch.tensor([[t]], dtype=tensor_a.dtype, device=self.device)
 
-            # Call FILM model: each call returns a single intermediate frame
-            output = self.model(tensor_a, tensor_b, t_tensor)
+            # Call FILM model: TorchScript model expects (x0, x1, batch_dt)
+            output = self.model(tensor_a, tensor_b, dt_tensor)
 
             bgr = self._tensor_to_bgr(output)
             results.append(bgr)

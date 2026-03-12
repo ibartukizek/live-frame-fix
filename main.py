@@ -12,7 +12,7 @@ from typing import Any, Dict
 from config import PipelineConfig
 from correction import run_correction
 from detection import run_detection, save_detection_report
-from io import encode_frames, extract_frames  # noqa: F401
+from video_io import encode_frames, extract_frames
 
 
 def load_config_from_json(path: str) -> Dict[str, Any]:

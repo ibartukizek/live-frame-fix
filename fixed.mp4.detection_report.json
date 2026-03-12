@@ -1,0 +1,33 @@
+{
+  "summary": {
+    "total_frames_scanned": 205,
+    "frozen_segments": 3,
+    "frozen_frames_affected": 205,
+    "drop_segments": 0,
+    "drop_frames_missing": 0,
+    "artifact_frames": 0
+  },
+  "segments": [
+    {
+      "problem_type": "FROZEN",
+      "start_frame_id": 0,
+      "end_frame_id": 31,
+      "frame_a_id": -1,
+      "frame_b_id": 32
+    },
+    {
+      "problem_type": "FROZEN",
+      "start_frame_id": 32,
+      "end_frame_id": 70,
+      "frame_a_id": 31,
+      "frame_b_id": 71
+    },
+    {
+      "problem_type": "FROZEN",
+      "start_frame_id": 71,
+      "end_frame_id": 204,
+      "frame_a_id": 70,
+      "frame_b_id": -1
+    }
+  ]
+}

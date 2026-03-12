@@ -10,7 +10,7 @@ from typing import Dict, List
 from tqdm import tqdm
 
 from config import PipelineConfig
-from io import extract_frames
+from video_io import extract_frames
 from models import FrameEntry, ProblemSegment, ProblemType
 
 from .artifact_detector import ArtifactDetector
